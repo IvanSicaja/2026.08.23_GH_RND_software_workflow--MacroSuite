@@ -1,7 +1,7 @@
-📌 **Project Title:** **THE PROJECTING AN AUTONOMOUS ROBOT OF THE RESCUE MAZE CATEGORY**  
-📅 **Project Timeline:** **August 2019 – October 2021**  
-🎥 YouTube Demo: [Link: https://youtu.be/3sTD7d_HzC4](https://youtu.be/3sTD7d_HzC4)  
-📦 GitHub Source Code: <https://github.com/IvanSicaja/2019.08.01_GitHub_The-Projecting-an-Autonomous-Robot-of-the-Rescue-Maze-Category>  
+📌 **Project Title:** **MacroSuite — Nutrition Planning Software**  
+📅 **Project Timeline:** **August 2026 – Ongoing**  
+🎥 YouTube Demo: **TBD**  
+📦 GitHub Source Code: <https://github.com/IvanSicaja/2026.08.23_GH_RND_software_workflow--MacroSuite>  
 
 ---
 
@@ -15,237 +15,168 @@
 
 ### 💡 Core Challenge This Project Resolves:
 
-Designing and engineering a fully integrated autonomous rescue robot capable of real-time perception, decision-making, navigation, victim detection, and mechanical adaptability in unpredictable maze environments under hardware and computational constraints.
+Designing and engineering an integrated desktop nutrition-planning system that synchronizes structured Excel data, user-managed ingredients, meals, menus, nutrition calculations, persistent configuration, image data, and automatic save/backup mechanisms while preserving database structure and data consistency.
 
 ---
 
 ### 🔧 Core Skills Tree Used To Build The Project - Skills and Tech Stack:
 *(Project-Specific Structured Overview)*
-```
+```text
 │
 ├── Software Engineering
 │ ├── Software / Frameworks / Libraries
 │ │ ├── Python
-│ │ ├── C++ (Arduino firmware development)
-│ │ ├── TensorFlow
-│ │ ├── Keras
-│ │ ├── OpenCV
-│ │ ├── scikit-learn
-│ │ ├── Pandas
-│ │ ├── Git / GitHub
-│ │ ├── Linux
-│ │ ├── Visual Studio Code
-│ │ └── Turtle (Python – maze visualization & mapping)
-│ │
-│ ├── Hardware
-│ │ ├── Raspberry Pi 4B
-│ │ ├── Teensy 3.5
-│ │ └── Arduino
+│ │ ├── PySide6 / Qt
+│ │ ├── openpyxl
+│ │ ├── Python Dataclasses
+│ │ ├── pathlib
+│ │ ├── QSettings
+│ │ └── Git / GitHub
 │ │
 │ └── Skills
-│   ├── Embedded software development & firmware programming
-│   ├── Real-time sensor data acquisition & processing
-│   ├── Computer vision pipeline architecture
-│   ├── AI model training, validation & optimization
-│   ├── Implementation of search algorithms (BFS, DFS, A*)
-│   ├── Linux-based robotics workflow management
-│   ├── System-level debugging & integration
-│   ├── Performance optimization under limited computational resources
-│   └── Multi-controller distributed architecture design
+│   ├── Desktop GUI application development
+│   ├── Event-driven application architecture
+│   ├── Object-oriented data modeling
+│   ├── Dynamic table & form generation
+│   ├── Search, filtering & sortable data presentation
+│   ├── Persistent application configuration
+│   ├── Keyboard-driven workflow optimization
+│   └── Exception handling & user-facing diagnostics
 │
-├── Mechanical Engineering
+├── System Integration Engineering
 │ ├── Software / Frameworks / Libraries
-│ │ └── Autodesk Fusion 360 (CAD/CAM design & simulation)
-│ │
-│ ├── Hardware / Hardware Tools
-│ │ └── Ultimaker 3+ (3D printing system)
+│ │ ├── Python
+│ │ ├── openpyxl
+│ │ ├── Microsoft Excel (.xlsx)
+│ │ └── PySide6 / Qt
 │ │
 │ └── Skills
-│   ├── Full robot chassis design & assembly modeling
-│   ├── Drivetrain engineering & torque optimization
-│   ├── 25-degree incline climbing capability design
-│   ├── Independent axle maneuvering mechanism
-│   ├── Structural strength & grip optimization
-│   ├── 3D printing parameter optimization (density, material selection)
-│   ├── Prototype validation & mechanical stress evaluation
-│   └── Mechanical-electrical integration alignment
+│   ├── GUI-to-Excel data integration
+│   ├── Multi-sheet data synchronization
+│   ├── Dynamic database schema detection
+│   ├── Header-driven column mapping
+│   ├── Ingredient-meal-menu data dependency integration
+│   ├── Persistent filesystem configuration
+│   ├── Automatic database backup handling
+│   ├── Temporary-file-based safe save workflow
+│   └── End-to-end data flow integration
 │
-├── Electrical Engineering
+├── Validation & Data Integrity
 │ ├── Software / Frameworks / Libraries
-│ │ └── Arduino IDE
-│ │
-│ ├── Hardware Components
-│ │ ├── Teensy 3.5
-│ │ ├── Raspberry Pi 4B
-│ │ ├── Arduino boards
-│ │ ├── Optical cameras (2x)
-│ │ ├── Thermal cameras (2x)
-│ │ ├── IR LiDAR sensors (6x)
-│ │ ├── Color sensor
-│ │ ├── Wheel encoders
-│ │ └── Motors & motor drivers
-│ │
-│ ├── Hardware Tools
-│ │ └── Power supply
-│ │
-│ ├── Communication Protocols
-│ │ ├── UART / Serial
-│ │ ├── I2C
-│ │ ├── SPI
-│ │ └── USB
+│ │ ├── openpyxl
+│ │ └── PySide6
 │ │
 │ └── Skills
-│   ├── Sensor calibration & integration
-│   ├── Signal filtering & noise reduction
-│   ├── Encoder-based position tracking systems
-│   ├── Multi-board communication architecture
-│   ├── Electrical system wiring & validation
-│   ├── Hardware troubleshooting & diagnostics
-│   ├── Power management & distribution optimization
-│   └── Embedded hardware-software synchronization
+│   ├── Input range validation
+│   ├── Database header & column detection
+│   ├── Type-safe numeric conversion
+│   ├── Missing-value handling
+│   ├── Data relationship validation
+│   ├── Controlled Excel value updates
+│   ├── Preservation of existing spreadsheet formatting
+│   ├── Save-error handling & backup protection
+│   └── Nutrition target deviation analysis
 │
-├── Data Science & Artificial Intelligence
+├── Data Processing & Calculation
 │ ├── Software / Frameworks / Libraries
-│ │ ├── TensorFlow
-│ │ ├── Keras
-│ │ ├── OpenCV
-│ │ ├── Pandas
-│ │ └── scikit-learn
-│ │
-│ ├── Hardware
-│ │ └── (Camera systems & sensors integrated via Raspberry Pi 4B)
+│ │ ├── Python
+│ │ └── openpyxl
 │ │
 │ └── Skills
-│   ├── Convolutional Neural Network (CNN) architecture design
-│   ├── OCR model training & evaluation (77.54% accuracy target)
-│   ├── Image preprocessing (grayscale, Gaussian blur, threshold, dilation)
-│   ├── Edge detection & dynamic noise filtering
-│   ├── Custom object detection scripting
-│   ├── Maze mapping & graph representation
-│   ├── Shortest-path computation using BFS, DFS, A*
-│   ├── Data transformation for performance acceleration (.CSV optimization)
-│   └── Overfitting prevention & model generalization strategies
+│   ├── Structured nutrition data processing
+│   ├── Per-100-gram normalization
+│   ├── Ingredient quantity scaling
+│   ├── Meal nutrition aggregation
+│   ├── Menu nutrition aggregation
+│   ├── Dynamic nutrition-column ordering
+│   ├── Daily nutrition target calculation
+│   └── Target-versus-actual deviation evaluation
 │
 └── Research & Development Engineering
   ├── Software / Frameworks / Libraries
   │ └── Integrated within sections above
   │
-  ├── Hardware / Hardware Tools
-  │ └── Integrated within sections above
-  │
   └── Skills
-    ├── System architecture design from concept to prototype
-    ├── Hardware feasibility analysis & component selection
-    ├── Iterative testing & calibration cycles
-    ├── Cross-disciplinary engineering coordination
-    ├── Technical documentation & publication preparation
-    ├── Experimental validation & benchmarking
-    └── End-to-end robotics system development
+    ├── Application workflow architecture
+    ├── Iterative GUI & data-model development
+    ├── Data-interface integration
+    ├── Reliability-oriented file handling
+    ├── User workflow optimization
+    ├── Technical debugging & diagnostics
+    └── End-to-end desktop system development
 ```
+
 
 ---
 
 ### 📋 Core System Capabilities - List Only:
 
-- **Autonomous character recognition (OCR)**
-- **Autonomous color recognition**
-- **Partially autonomous drive in the maze** (need a lot of testing and calibration for fully autonomous drive and labyrinth mapping)
-- **Thermal victim recognition**
-- **Package delivery**
-- **Ability to master a climb of 25 degrees** (all-wheel drive, strong grip)
-- **Independent axle maneuvering**
-- **Remembering positions (encoders)**...
+- **Ingredient database management**
+- **Meal creation from reusable ingredients**
+- **Menu creation from ingredients and complete meals**
+- **Automatic nutrition scaling by ingredient weight**
+- **Automatic meal & menu nutrition aggregation**
+- **Nutrition values per 100 g**
+- **Personalized daily nutrition target calculation**
+- **Target-versus-consumption deviation analysis**
+- **Dynamic Excel nutrition-column detection**
+- **Excel database read/write synchronization**
+- **Preservation of existing spreadsheet headers & formatting**
+- **Automatic database backup creation**
+- **Delayed automatic saving after data changes**
+- **Persistent database path & user-profile settings**
+- **Ingredient, meal & menu image management**
+- **Search, filtering, sorting & keyboard-assisted data entry**
+
+
 
 ---
 
 ### 🧠️ How It Works - Core System Capabilities Workflow:
 
-The project is very complex and demands knowledge in different areas (**3D modeling, 3D printing, advanced programming skills in different languages, researching ability, expert knowledge of every electrical component working principles, image processing, cause-and-effect analysis...**)  
-The brains of the robot are **microcontroller Teensy 3.5** and **Raspberry Pi 4B**.
+The application is built as a **Python desktop system using PySide6 / Qt** with an **Excel workbook as its structured data backend**. The application connects the user interface, nutrition calculation logic, persistent settings, images, and Excel data into a single workflow.
 
-The robot is also equipped with:
+**Database integration:**  
+The user selects an **`.xlsx` nutrition database**, which is opened through `openpyxl`. MacroSuite detects nutrition columns from the workbook headers rather than relying exclusively on fixed positions. This enables the application to map fields such as **energy, fat, saturated fat, carbohydrates, sugars, fibre, protein, and salt** to the corresponding internal data model.
 
-- **2x optical camera**
-- **2x thermal camera**
-- **6x IR lidar sensor**
-- **1x color sensor**... (more can be found at GitHub in my publication paper: _The projecting an autonomous robot of the rescue maze category.pdf_ -> Caption 4.3)
+**Ingredient management:**  
+Ingredients are represented using structured Python dataclasses containing identification data, brand and product information, package size, nutrition values, and optional image data. Nutrition values can be automatically scaled according to the selected amount in grams.
 
-**Optical character recognition:**  
-In this project, we trained a **Convolutional Neural Network (CNN)** on an image examples with the Python module **TensorFlow**. Images are converted into **.CSV file** because of speeder processing. The input image is filtered with different filters (**Grayscale, Gaussian Blur, Threshold, Binary, Dilatation**) in order to speed up image processing (replace three color channels with one channel, **RGB -> grayscale**). Reduce noises (the dust on the live video capturing). Getting smooth and sharp character edges is the most important characteristic for successful character recognition. The trained model accuracy is **77.54%** which is a target because we want to get high reliability and avoid CNN overfitting.
+**Meal composition:**  
+Meals are assembled from existing ingredients. Each ingredient retains its specified weight, while MacroSuite calculates the corresponding nutrition contribution and aggregates all values into complete meal totals.
 
-**Object detection:**  
-Developed the custom script with the Python computer vision module **OpenCV** which filters the character that should be recognized from the other objects in the robot's surroundings. The script works on the principle of **character height and proportion**, together with the **dynamic noise filtering**.
+**Menu composition:**  
+Menus can combine both individual ingredients and previously defined meals. The software automatically identifies the selected item type, scales its nutritional contribution according to weight, and calculates the total nutrition profile of the complete menu.
 
-**Maze mapping:**  
-Maze mapping is done in my Python module **Turtle**. Every maze field is properly recognized by the robot's **distance and color sensors**. After all maze fields are mapped, they are sent to the backend and the shortest path is calculated by the artificial intelligence searching algorithms such as: _Breadth-First Search, Depth-First Search, A Algorithm_\*...
+**Daily nutrition targets:**  
+A persistent personal profile stores parameters such as **gender, age, weight, height, and training status**. MacroSuite calculates estimated daily energy and macronutrient targets and compares menu or meal totals against those targets. Deviations are evaluated as percentages and visually classified to support rapid validation of the resulting nutrition plan.
 
-**Hardware choosing and connecting:**  
-The entire process of choosing **hardware platforms, supported protocols, and hardware capabilities** is done. E.g. the **video camera** must have a corresponding **focal length** otherwise it will be useless, **framerate, resolution, additional light source**, **motors** should have expected speed, **distance sensors** should be precise and able to work in a maze, **robot brain** should be able to do high computation payload and support Python…
+**Image data integration:**  
+Ingredients can contain multiple images, while meals and menus can contain thumbnail images. Images can be loaded, displayed, rotated, removed, and stored as encoded data through the application workflow.
 
-**Frame design and 3D printing:**  
-Entire robot is **3D designed** with **Fusion 360 CAD/CAM** software and **3D printed** with the **Ultimaker 3+** 3D printer with corresponding **filament, density**, etc.
-
-**Developing mechatronic code:**  
-**Arduino** is used to control all **sensors and actuators** on the robot except the **camera** which is controlled by **Raspberry Pi 4B** computer.
+**Persistence & reliability:**  
+The selected database path and personal settings are persisted through **QSettings**. Data modifications trigger a delayed automatic-save mechanism, while manual saving is also available. A database backup is created before modification, and save operations use a temporary workbook file before replacing the active database. Save failures are surfaced through application diagnostics while the backup remains available.
 
 ---
 
 ### ⚠️ Note:
 
-Achieving fully **autonomous drive** and **labyrinth mapping** requires extensive testing and calibration.  
-I would especially like to thank **Mirko Pezo** and **Stjepan Mikulic** for their exceptional contribution to the development of this project .
+MacroSuite currently implements extensive runtime input validation, data-consistency handling, exception handling, backup protection, and save-failure diagnostics. A dedicated automated unit/integration test suite is not currently part of the published project repository, so formal test automation remains a future extension.
 
 ---
 
 ### 📸 Project Snapshots:
 
 <p align="center">
-  <img src="https://github.com/IvanSicaja/2019.08.01_GitHub_The-Projecting-an-Autonomous-Robot-of-the-Rescue-Maze-Category/blob/main/publish/2.0_Thumbnail_1.png?raw=true" 
-       alt="Rescue Maze Robot Preview 1" 
-       width="640" 
-       height="360">
+  <strong>TBD</strong>
 </p>
 
 <p align="center">
-  <img src="https://github.com/IvanSicaja/2019.08.01_GitHub_The-Projecting-an-Autonomous-Robot-of-the-Rescue-Maze-Category/blob/main/publish/2.0_Thumbnail_2.png?raw=true" 
-       alt="Rescue Maze Robot Preview 2" 
-       width="640" 
-       height="360">
+  <strong>TBD</strong>
 </p>
 
 <p align="center">
-  <img src="https://github.com/IvanSicaja/2019.08.01_GitHub_The-Projecting-an-Autonomous-Robot-of-the-Rescue-Maze-Category/blob/main/publish/2.0_Thumbnail_3.png?raw=true" 
-       alt="Rescue Maze Robot Preview 3" 
-       width="640" 
-       height="360">
-</p>
-
-<p align="center">
-  <img src="https://github.com/IvanSicaja/2019.08.01_GitHub_The-Projecting-an-Autonomous-Robot-of-the-Rescue-Maze-Category/blob/main/publish/2.0_Thumbnail_4.png?raw=true" 
-       alt="Rescue Maze Robot Preview 4" 
-       width="640" 
-       height="360">
-</p>
-
-<p align="center">
-  <img src="https://github.com/IvanSicaja/2019.08.01_GitHub_The-Projecting-an-Autonomous-Robot-of-the-Rescue-Maze-Category/blob/main/publish/2.0_Thumbnail_5.png?raw=true" 
-       alt="Rescue Maze Robot Preview 5" 
-       width="640" 
-       height="360">
-</p>
-
-<p align="center">
-  <img src="https://github.com/IvanSicaja/2019.08.01_GitHub_The-Projecting-an-Autonomous-Robot-of-the-Rescue-Maze-Category/blob/main/publish/2.0_Thumbnail_6.png?raw=true" 
-       alt="Rescue Maze Robot Preview 6" 
-       width="640" 
-       height="360">
-</p>
-
-<p align="center">
-  <img src="https://github.com/IvanSicaja/2019.08.01_GitHub_The-Projecting-an-Autonomous-Robot-of-the-Rescue-Maze-Category/blob/main/publish/2.0_Thumbnail_7.png?raw=true" 
-       alt="Rescue Maze Robot Preview 7" 
-       width="640" 
-       height="360">
+  <strong>TBD</strong>
 </p>
 
 ---
@@ -253,16 +184,11 @@ I would especially like to thank **Mirko Pezo** and **Stjepan Mikulic** for thei
 ### 🎥 Video Demonstration:
 
 <p align="center">
-  <a href="https://youtu.be/3sTD7d_HzC4">
-    <img src="https://img.youtube.com/vi/3sTD7d_HzC4/0.jpg" 
-         alt="Watch the demo" 
-         width="640" 
-         height="1000">
-  </a>
+  <strong>TBD</strong>
 </p>
 
 ---
 
 ### 📣 Hashtags Section:
 
-**#AutonomousRobotics #RescueMaze #RoboticsEngineering #AI #ComputerVision #OCR #ObjectDetection #PathPlanning #CNN #TensorFlow #OpenCV #EmbeddedSystems #RaspberryPi #Arduino #3DPrinting #Fusion360 #Mechatronics #AutonomousNavigation #MachineLearning**
+**#MacroSuite #Python #PySide6 #Qt #OpenPyXL #ExcelAutomation #SystemIntegration #SoftwareEngineering #DesktopApplication #DataProcessing #DataValidation #ConfigurationManagement #BackupRecovery #DataIntegrity #GUI #NutritionPlanning #NutritionSoftware #Automation #ResearchAndDevelopment**

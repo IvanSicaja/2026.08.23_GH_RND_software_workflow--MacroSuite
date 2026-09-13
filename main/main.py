@@ -1270,7 +1270,7 @@ def _calc_balance(totals: Dict[str, float], targets: Dict[str, float],
         arrow = "▲" if is_over else "▼"
         sign = "+" if is_over else "−"
         color = C_DIFF_OK if abs(pct) <= 5 else C_DIFF_OVER
-        items[key] = (f"{arrow} {sign}{abs(diff):.0f}", color)
+        items[key] = (f"{arrow} {sign}{abs(diff):.0f} | {abs(pct):.0f}%", color)
         if abs(pct) > 5:
             deviations.append((abs(pct), key, "over" if is_over else "under"))
 
