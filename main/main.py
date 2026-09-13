@@ -323,6 +323,9 @@ class Ingredient:
     protein: float = 0.0
     salt: float = 0.0
     package_size: str = ""
+    image1_b64: str = ""   # base64 — thumbnail
+    image2_b64: str = ""   # base64 — front packaging
+    image3_b64: str = ""   # base64 — back packaging
 
     def scaled_nutrition(self, grams: float) -> Dict[str, float]:
         f = grams / 100.0
@@ -339,6 +342,7 @@ class MealIngredient:
 class Meal:
     name: str
     items: List[MealIngredient] = field(default_factory=list)
+    thumbnail_b64: str = ""
 
 
 @dataclass
@@ -352,6 +356,7 @@ class MenuEntry:
 class Menu:
     name: str
     items: List[MenuEntry] = field(default_factory=list)
+    thumbnail_b64: str = ""
 
 
 # ━━━━━━━━━━━━━━━━━━ DATABASE MANAGER ━━━━━━━━━━━━━━━━━━
@@ -434,6 +439,16 @@ class DatabaseManager:
                             result[fld] = c; break
         return result
 
+    def _detect_image_cols(self, ws) -> List[int]:
+        """Find 1-based column indices with 'image', 'img', or 'thumbnail' in header."""
+        cols = []
+        for (r, c), cell in ws._cells.items():
+            if r == 1 and cell.value:
+                hl = str(cell.value).lower()
+                if "image" in hl or "img" in hl or "thumbnail" in hl:
+                    cols.append(c)
+        return sorted(cols)
+
     @property
     def nutrition_display_order(self) -> List[str]:
         """Nutrition keys sorted by database column position."""
@@ -501,6 +516,17 @@ class DatabaseManager:
                 salt=_f(_val("salt")),
                 package_size=str(row[self._max_col - 1] or "").strip() if self._max_col > 15 and len(row) > self._max_col - 1 else "",
             )
+            # Read image columns if they exist (last 3 columns with "image" or "img" in header)
+            for i, h in enumerate(header_row):
+                if h and ("image" in str(h).lower() or "img" in str(h).lower() or "thumbnail" in str(h).lower()):
+                    val = row[i] if i < len(row) else None
+                    b64 = str(val) if val else ""
+                    if not result[int(rid)].image1_b64:
+                        result[int(rid)].image1_b64 = b64
+                    elif not result[int(rid)].image2_b64:
+                        result[int(rid)].image2_b64 = b64
+                    elif not result[int(rid)].image3_b64:
+                        result[int(rid)].image3_b64 = b64
         wb.close()
         return result
 
@@ -661,6 +687,13 @@ class DatabaseManager:
                     val = getattr(ing, field)
                     self._safe_write(ws, r, col_idx + 1, val if val else None)
             self._safe_write(ws, r, self._max_col, ing.package_size or None)
+
+            # Write images to detected image columns
+            img_cols = self._detect_image_cols(ws)
+            if img_cols:
+                for i, col1 in enumerate(img_cols[:3]):
+                    val = [ing.image1_b64, ing.image2_b64, ing.image3_b64][i] if i < 3 else ""
+                    self._safe_write(ws, r, col1, val or None)
 
         for old_id, old_row in id_to_row.items():
             if old_id not in written_ids:
@@ -1343,6 +1376,144 @@ def _make_legend_with_profile():
     return frame
 
 
+# ━━━━━━━━━━━━━━━━━━ IMAGE PANEL ━━━━━━━━━━━━━━━━━━━━
+
+import base64
+from PySide6.QtCore import QByteArray, QBuffer, QIODeviceBase
+from PySide6.QtGui import QTransform
+
+
+def pixmap_to_b64(pm: QPixmap) -> str:
+    buf = QByteArray()
+    bio = QBuffer(buf)
+    bio.open(QIODeviceBase.WriteOnly)
+    pm.save(bio, "PNG")
+    return base64.b64encode(buf.data()).decode()
+
+
+def b64_to_pixmap(b64: str) -> Optional[QPixmap]:
+    if not b64:
+        return None
+    try:
+        data = base64.b64decode(b64)
+        pm = QPixmap()
+        pm.loadFromData(data)
+        return pm if not pm.isNull() else None
+    except Exception:
+        return None
+
+
+class ImageSlot(QFrame):
+    """Single image display with upload/rotate/delete."""
+    changed = Signal()
+
+    def __init__(self, label_text: str = "Image", parent=None):
+        super().__init__(parent)
+        self.setStyleSheet(f"background: {C_CARD}; border: 1px solid {C_BORDER}; border-radius: 8px;")
+        self._b64 = ""
+        self._rotation = 0
+
+        lay = QVBoxLayout(self)
+        lay.setContentsMargins(6, 6, 6, 6); lay.setSpacing(4)
+
+        lbl = QLabel(label_text)
+        lbl.setAlignment(Qt.AlignCenter)
+        lbl.setStyleSheet(f"font-size: 10px; font-weight: 600; color: {C_TEXT2}; border: none; background: transparent;")
+        lay.addWidget(lbl)
+
+        self.img_label = QLabel()
+        self.img_label.setFixedSize(130, 130)
+        self.img_label.setAlignment(Qt.AlignCenter)
+        self.img_label.setStyleSheet(f"background: {C_BG}; border: 1px solid {C_BORDER}; border-radius: 4px;")
+        lay.addWidget(self.img_label, 0, Qt.AlignCenter)
+
+        btns = QHBoxLayout(); btns.setSpacing(3)
+        up = QPushButton("📷")
+        up.setToolTip("Upload"); up.setFixedSize(32, 24)
+        up.setStyleSheet(f"background: {C_BORDER2}; border-radius: 4px; font-size: 12px; padding: 0; min-height: 0; border: none;")
+        up.clicked.connect(self._upload)
+        rot = QPushButton("↻")
+        rot.setToolTip("Rotate 90°"); rot.setFixedSize(32, 24)
+        rot.setStyleSheet(up.styleSheet())
+        rot.clicked.connect(self._rotate)
+        rm = QPushButton("✕")
+        rm.setToolTip("Remove"); rm.setFixedSize(32, 24)
+        rm.setStyleSheet(f"background: {C_RED}44; border-radius: 4px; font-size: 11px; padding: 0; min-height: 0; color: {C_RED}; border: none;")
+        rm.clicked.connect(self._remove)
+        btns.addWidget(up); btns.addWidget(rot); btns.addWidget(rm)
+        lay.addLayout(btns)
+
+    def set_image_b64(self, b64: str):
+        self._b64 = b64
+        pm = b64_to_pixmap(b64)
+        if pm:
+            scaled = pm.scaled(128, 128, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+            self.img_label.setPixmap(scaled)
+        else:
+            self.img_label.clear()
+            self.img_label.setText("No image")
+            self.img_label.setStyleSheet(
+                f"background: {C_BG}; border: 1px solid {C_BORDER}; border-radius: 4px;"
+                f"color: {C_TEXT3}; font-size: 10px;")
+
+    def get_b64(self) -> str:
+        return self._b64
+
+    def _upload(self):
+        path, _ = QFileDialog.getOpenFileName(self, "Select Image", "",
+                                               "Images (*.png *.jpg *.jpeg *.bmp *.webp)")
+        if path:
+            pm = QPixmap(path)
+            if not pm.isNull():
+                # Resize to max 400px to keep Excel file reasonable
+                if pm.width() > 400 or pm.height() > 400:
+                    pm = pm.scaled(400, 400, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+                self._b64 = pixmap_to_b64(pm)
+                self.set_image_b64(self._b64)
+                self.changed.emit()
+
+    def _rotate(self):
+        if not self._b64:
+            return
+        pm = b64_to_pixmap(self._b64)
+        if pm:
+            t = QTransform().rotate(90)
+            pm = pm.transformed(t, Qt.SmoothTransformation)
+            self._b64 = pixmap_to_b64(pm)
+            self.set_image_b64(self._b64)
+            self.changed.emit()
+
+    def _remove(self):
+        self._b64 = ""
+        self.set_image_b64("")
+        self.changed.emit()
+
+
+class ImagePanel(QWidget):
+    """Panel with 1-3 image slots. Emits changed when any image changes."""
+    changed = Signal()
+
+    def __init__(self, slot_configs: List[str], parent=None):
+        super().__init__(parent)
+        self.setFixedWidth(160)
+        lay = QVBoxLayout(self)
+        lay.setContentsMargins(4, 0, 4, 0); lay.setSpacing(6)
+        self.slots: List[ImageSlot] = []
+        for label in slot_configs:
+            s = ImageSlot(label)
+            s.changed.connect(self.changed.emit)
+            lay.addWidget(s)
+            self.slots.append(s)
+        lay.addStretch()
+
+    def set_images(self, b64_list: List[str]):
+        for i, s in enumerate(self.slots):
+            s.set_image_b64(b64_list[i] if i < len(b64_list) else "")
+
+    def get_images(self) -> List[str]:
+        return [s.get_b64() for s in self.slots]
+
+
 # ━━━━━━━━━━━━━━━━━ INGREDIENTS TAB ━━━━━━━━━━━━━━━━━━━
 
 class IngredientsTab(QWidget):
@@ -1370,6 +1541,9 @@ class IngredientsTab(QWidget):
         add = QPushButton("＋  Add Ingredient"); add.clicked.connect(self._add)
         hdr.addWidget(add)
         lay.addLayout(hdr)
+
+        # Table + Image panel side by side
+        content = QHBoxLayout()
         self.table = QTableWidget()
         self.table.setAlternatingRowColors(True)
         self.table.setSelectionBehavior(QAbstractItemView.SelectRows)
@@ -1379,7 +1553,13 @@ class IngredientsTab(QWidget):
         self.table.verticalHeader().setVisible(False)
         self.table.setSortingEnabled(True)
         self.table.doubleClicked.connect(self._edit)
-        lay.addWidget(self.table)
+        self.table.currentCellChanged.connect(self._on_row_changed)
+        content.addWidget(self.table, 1)
+
+        self.img_panel = ImagePanel(["Thumbnail", "Front Pack", "Back Pack"])
+        self.img_panel.changed.connect(self._on_image_changed)
+        content.addWidget(self.img_panel)
+        lay.addLayout(content)
 
         legend_lay = _make_legend_with_profile()
         self.profile_btn = QPushButton("⚙ Profile")
@@ -1460,6 +1640,39 @@ class IngredientsTab(QWidget):
     def _filter(self, text): self._populate(text)
     def _next_id(self): return max(self.ingredients.keys(), default=0) + 1
 
+    def _on_row_changed(self, row, col, prev_row, prev_col):
+        """Show images for selected ingredient."""
+        if row < 0 or row >= len(self.ingredients):
+            self.img_panel.set_images(["", "", ""])
+            return
+        item = self.table.item(row, 0)
+        if not item: return
+        try:
+            iid = int(item.text())
+        except (ValueError, TypeError):
+            return
+        ing = self.ingredients.get(iid)
+        if ing:
+            self.img_panel.set_images([ing.image1_b64, ing.image2_b64, ing.image3_b64])
+
+    def _on_image_changed(self):
+        """Save images back to selected ingredient."""
+        row = self.table.currentRow()
+        if row < 0: return
+        item = self.table.item(row, 0)
+        if not item: return
+        try:
+            iid = int(item.text())
+        except (ValueError, TypeError):
+            return
+        ing = self.ingredients.get(iid)
+        if ing:
+            imgs = self.img_panel.get_images()
+            ing.image1_b64 = imgs[0] if len(imgs) > 0 else ""
+            ing.image2_b64 = imgs[1] if len(imgs) > 1 else ""
+            ing.image3_b64 = imgs[2] if len(imgs) > 2 else ""
+            self.data_changed.emit()
+
     def _add(self):
         d = IngredientDialog(self, next_id=self._next_id(), existing=self.ingredients)
         if d.exec() == QDialog.Accepted:
@@ -1539,6 +1752,8 @@ class MealsTab(QWidget):
         right = QVBoxLayout(); right.setSpacing(10)
         self.title_lbl = QLabel("Select a meal"); self.title_lbl.setObjectName("sectionTitle")
         right.addWidget(self.title_lbl)
+
+        detail_row = QHBoxLayout()
         self.detail = QTableWidget()
         self.detail.setAlternatingRowColors(True)
         self.detail.setSelectionBehavior(QAbstractItemView.SelectRows)
@@ -1548,7 +1763,12 @@ class MealsTab(QWidget):
         cols = ["Ingredient", "Weight (g)"] + NUTRITION_LABELS
         self.detail.setColumnCount(len(cols))
         self.detail.setHorizontalHeaderLabels(cols)
-        right.addWidget(self.detail)
+        detail_row.addWidget(self.detail, 1)
+
+        self.img_panel = ImagePanel(["Meal Photo"])
+        self.img_panel.changed.connect(self._on_image_changed)
+        detail_row.addWidget(self.img_panel)
+        right.addLayout(detail_row)
         rb = QHBoxLayout()
         ai = QPushButton("＋ Add Ingredient"); ai.clicked.connect(self._add_ing)
         ea = QPushButton("Edit Weight"); ea.setProperty("class", "secondary"); ea.clicked.connect(self._edit_amount)
@@ -1591,7 +1811,7 @@ class MealsTab(QWidget):
         meal = self._cur()
         if not meal:
             self.title_lbl.setText("Select a meal")
-            # Show only daily target row when nothing selected
+            self.img_panel.set_images([""])
             nk = self._nutr_keys
             if self.daily_targets:
                 self.detail.setRowCount(1)
@@ -1603,7 +1823,16 @@ class MealsTab(QWidget):
             else:
                 self.detail.setRowCount(0)
             return
-        self.title_lbl.setText(meal.name); self._refresh()
+        self.title_lbl.setText(meal.name)
+        self.img_panel.set_images([meal.thumbnail_b64])
+        self._refresh()
+
+    def _on_image_changed(self):
+        meal = self._cur()
+        if meal:
+            imgs = self.img_panel.get_images()
+            meal.thumbnail_b64 = imgs[0] if imgs else ""
+            self.data_changed.emit()
 
     def _refresh(self):
         meal = self._cur()
@@ -1754,6 +1983,8 @@ class MenusTab(QWidget):
         right = QVBoxLayout(); right.setSpacing(10)
         self.title_lbl = QLabel("Select a menu"); self.title_lbl.setObjectName("sectionTitle")
         right.addWidget(self.title_lbl)
+
+        detail_row = QHBoxLayout()
         self.detail = QTableWidget()
         self.detail.setAlternatingRowColors(True)
         self.detail.setSelectionBehavior(QAbstractItemView.SelectRows)
@@ -1762,7 +1993,12 @@ class MenusTab(QWidget):
         self.detail.horizontalHeader().setStretchLastSection(True)
         cols = ["Type", "Name", "Weight (g)"] + NUTRITION_LABELS
         self.detail.setColumnCount(len(cols)); self.detail.setHorizontalHeaderLabels(cols)
-        right.addWidget(self.detail)
+        detail_row.addWidget(self.detail, 1)
+
+        self.img_panel = ImagePanel(["Menu Photo"])
+        self.img_panel.changed.connect(self._on_image_changed)
+        detail_row.addWidget(self.img_panel)
+        right.addLayout(detail_row)
         rb = QHBoxLayout()
         ai = QPushButton("＋ Add Item"); ai.clicked.connect(self._add_item)
         ea = QPushButton("Edit Weight"); ea.setProperty("class", "secondary"); ea.clicked.connect(self._edit_amount)
@@ -1803,6 +2039,7 @@ class MenusTab(QWidget):
         menu = self._cur()
         if not menu:
             self.title_lbl.setText("Select a menu")
+            self.img_panel.set_images([""])
             nk = self._nutr_keys
             if self.daily_targets:
                 self.detail.setRowCount(1)
@@ -1814,7 +2051,16 @@ class MenusTab(QWidget):
             else:
                 self.detail.setRowCount(0)
             return
-        self.title_lbl.setText(menu.name); self._refresh()
+        self.title_lbl.setText(menu.name)
+        self.img_panel.set_images([menu.thumbnail_b64])
+        self._refresh()
+
+    def _on_image_changed(self):
+        menu = self._cur()
+        if menu:
+            imgs = self.img_panel.get_images()
+            menu.thumbnail_b64 = imgs[0] if imgs else ""
+            self.data_changed.emit()
 
     def _refresh(self):
         menu = self._cur()
