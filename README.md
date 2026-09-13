@@ -1,5 +1,5 @@
 📌 **Project Title:** **MacroSuite — Nutrition Planning Software**  
-📅 **Project Timeline:** **August 2026 – Ongoing**  
+📅 **Project Timeline:** **August 2026 – Present [Under Active Development & Maintenance]**  
 🎥 YouTube Demo: **TBD**  
 📦 GitHub Source Code: <https://github.com/IvanSicaja/2026.08.23_GH_RND_software_workflow--MacroSuite>  
 
